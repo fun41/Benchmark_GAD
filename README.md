@@ -85,16 +85,7 @@ If your local file names are different, update the script names and paths accord
 Create a Python environment and install the required dependencies.
 
 ```bash
-conda create -n benchmark_gad python=3.9
-conda activate benchmark_gad
-```
-
-Install the core packages:
-
-```bash
-pip install numpy networkx scikit-learn scipy
-pip install torch
-pip install torch-geometric
+pip install -r requirements.txt
 ```
 
 Depending on your CUDA and PyTorch versions, you may need to install PyTorch and PyTorch Geometric using their official installation commands.
@@ -124,119 +115,7 @@ data = Data(
 )
 ```
 
-Place the original dataset under the `data/` directory, for example:
-
-```text
-data/credit.pt
-data/twitter.pt
-```
-
-## Usage
-
-### 1. Expand graph scale
-
-Configure the dataset name and target node number in the graph expansion script.
-
-```python
-DATASET = "credit"
-TARGET_NODE_NUM = 100000
-```
-
-Run:
-
-```bash
-python scripts/expand_graph_preserve_dist.py
-```
-
-The output file will be saved to:
-
-```text
-data/expanded_<scale>_<dataset>.pt
-```
-
-For example:
-
-```text
-data/expanded_10.0_credit.pt
-```
-
-### 2. Simulate attribute missingness
-
-Configure the normal/anomaly missing ratios and filling strategy.
-
-```python
-DATASET = "credit"
-NORMAL_NODE_MISS_RATIO = 0.5
-ANOMALY_NODE_MISS_RATIO = 0.5
-FILL_STRATEGY = "mean"
-```
-
-Run:
-
-```bash
-python scripts/add_attr_missing_and_fill.py
-```
-
-The output file will be saved to:
-
-```text
-data/miss_<ratio>_<fill_strategy>_<dataset>.pt
-```
-
-### 3. Adjust anomaly ratio
-
-Configure the target anomaly ratio and anomaly preservation strategy.
-
-```python
-DATASET = "credit"
-TARGET_ANOMALY_RATIO = 0.005
-SELECT_METHOD = "core"  # options: "core", "edge", "random"
-```
-
-Run:
-
-```bash
-python scripts/reduce_anomaly_ratio.py
-```
-
-The output file will be saved to:
-
-```text
-data/ratio_<method><ratio>%_<dataset>.pt
-```
-
-## Validation
-
-The scripts report key statistics before and after transformation, including:
-
-- number of nodes;
-- number of edges;
-- anomaly ratio;
-- edge-node ratio;
-- degree distribution statistics;
-- feature dimensionality;
-- missing-value ratio;
-- whether NaN values remain after filling.
-
-For graph expansion, KS tests can be used to compare the original and expanded distributions.
-
-A typical validation requirement is:
-
-```text
-KS p-value > 0.05
-```
-
-The degree distribution is validated using the original and expanded node degree arrays.  
-The feature matrix is validated by applying the KS test to each feature dimension independently.
-
-When the graph is very large, the KS test may become sensitive to very small differences. In that case, it is recommended to report both:
-
-```text
-KS statistic
-p-value
-```
-
-rather than relying only on the p-value.
+Place the original dataset under the `data/` directory
 
 ## Configuration Summary
 
@@ -244,47 +123,31 @@ rather than relying only on the p-value.
 
 | Variable | Description |
 | --- | --- |
+| `SEED` | Random seed |
 | `DATASET` | Dataset name |
 | `TARGET_NODE_NUM` | Target number of nodes after expansion |
-| `ORIGINAL_PT_PATH` | Path to the original `.pt` dataset |
-| `SAVE_PT_PATH` | Path to save the expanded dataset |
-| `SEED` | Random seed |
 
 ### Attribute Missingness
 
 | Variable | Description |
 | --- | --- |
+| `SEED` | Random seed |
+| `DATASET` | Dataset name |
 | `NORMAL_NODE_MISS_RATIO` | Missing ratio for normal-node features |
 | `ANOMALY_NODE_MISS_RATIO` | Missing ratio for anomaly-node features |
 | `FILL_STRATEGY` | Missing-value filling strategy: `mean`, `median`, or `neighbor` |
-| `DATASET` | Dataset name |
-| `SEED` | Random seed |
+
 
 ### Anomaly Ratio Adjustment
 
 | Variable | Description |
 | --- | --- |
+| `SEED` | Random seed |
+| `DATASET` | Dataset name |
 | `TARGET_ANOMALY_RATIO` | Target anomaly ratio |
 | `SELECT_METHOD` | Anomaly preservation strategy: `core`, `edge`, or `random` |
-| `DATASET` | Dataset name |
-| `SEED` | Random seed |
 
-## Reproducibility
 
-All scripts use a fixed random seed by default:
-
-```python
-SEED = 20
-```
-
-The seed is applied to:
-
-- Python `random`;
-- NumPy;
-- PyTorch CPU;
-- PyTorch CUDA, if available.
-
-For more robust evaluation, it is recommended to run each setting with multiple random seeds and report the mean and standard deviation.
 
 ## Notes
 
@@ -292,26 +155,3 @@ For more robust evaluation, it is recommended to run each setting with multiple 
 - Labels are assumed to be binary: `0` for normal nodes and `1` for anomaly nodes.
 - The current scripts focus on dataset construction and transformation, not model training.
 - Generated datasets are saved as `.pt` files and can be loaded directly with `torch.load`.
-
-## Citation
-
-If you use this repository in your research, please cite our work:
-
-```bibtex
-@article{benchmarkgad2026,
-  title   = {Benchmarking Graph Anomaly Detection under Realistic Dataset Conditions},
-  author  = {Your Name and Coauthors},
-  journal = {arXiv preprint},
-  year    = {2026}
-}
-```
-
-Please replace the placeholder citation with the final paper information after publication.
-
-## License
-
-Please add a license file before public release. For academic open-source projects, commonly used licenses include MIT, Apache-2.0, and BSD-3-Clause.
-
-## Contact
-
-For questions, issues, or suggestions, please open an issue in this repository.
