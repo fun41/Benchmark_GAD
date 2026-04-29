@@ -60,8 +60,16 @@ A typical structure is shown below.
 ```
 Benchmark_GAD/
 ├── data/
-│   ├── credit.pt
 │   ├── twitter.pt
+│   └── ...
+├── expand_data/
+│   ├── expanded_100_twitter.pt
+│   └── ...
+├── miss_data/
+│   ├── miss_30%_mean_pubmed.pt
+│   └── ...
+├── ratio_data/
+│   ├── ratio_core0.1%_credit.pt
 │   └── ...
 ├── data_expand.py
 ├── data_miss.py
