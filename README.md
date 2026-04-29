@@ -104,7 +104,9 @@ data = Data(
 )
 ```
 
-Place the original dataset under the `data/` directory
+Place the original dataset under the `data/` directory.
+
+Due to the upload size limitation, the `data.zip` folder only contains two datasets: `credit.pt` and `pubmed.pt`.
 
 ## Configuration Summary
 
