@@ -6,17 +6,6 @@ Most existing GAD experiments focus on a fixed set of small or medium-scale grap
 
 ## Overview
 
-This repository focuses on controlled benchmark construction for GAD. It provides utilities for:
-
-- **Graph scale expansion** while preserving key structural and feature distributions.
-- **Anomaly ratio adjustment** to create datasets with different levels of anomaly imbalance.
-- **Attribute missingness simulation** with configurable missing ratios and filling strategies.
-- **Distribution validation**, including statistics such as anomaly ratio, edge-node ratio, degree distribution, feature statistics, and KS tests.
-
-The generated datasets are saved in the PyTorch Geometric `Data` format and can be directly used by GNN-based anomaly detection models.
-
-## Key Features
-
 ### 1. Distribution-preserving graph expansion
 
 The graph expansion script increases the number of nodes to a target scale while attempting to preserve the original dataset properties, including:
